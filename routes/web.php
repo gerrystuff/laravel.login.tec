@@ -15,5 +15,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::resource('auth', AuthController::class);
+
+Route::get('/',function(){
+    return view('welcome');
+});
+
+// Route::resource('/auth',AuthController::class);
+// Route::resource('auth', AuthController::class);
+Route::get('/auth',[AuthController::class,'index']);
+Route::get('/auth/login',[AuthController::class,'login']);
+Route::get('/auth/register',[AuthController::class,'register']);
+Route::post('/auth/register',[AuthController::class,'store']);
+
+
+
+// Route::post('/auth/register',[AuthController::class,'register']);
+
+
+
+
+// Route::get('/auth', function (){
+
+//     return view('auth.index');
+// });
+
 
