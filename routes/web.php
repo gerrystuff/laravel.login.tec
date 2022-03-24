@@ -24,8 +24,9 @@ Route::get('/',function(){
 // Route::resource('auth', AuthController::class);
 Route::get('/auth',[AuthController::class,'index']);
 Route::get('/auth/login',[AuthController::class,'login']);
-Route::get('/auth/register',[AuthController::class,'register']);
+Route::post('/auth/login',[AuthController::class,'auth']);
 Route::post('/auth/register',[AuthController::class,'store']);
+Route::get('/auth/register',[AuthController::class,'register']);
 
 
 

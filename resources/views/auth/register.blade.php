@@ -47,7 +47,7 @@
 
     </div>
     <div class="d-flex flex-row">
-        @if ($message = Session::get('usuario'))
+        @if ($message = Session::get('res'))
         <div class="alert alert-success">
             <p>{{ json_encode($message) }}</p>
         </div>

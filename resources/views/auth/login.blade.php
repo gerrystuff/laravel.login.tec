@@ -3,7 +3,7 @@
 @section("login")
 <div class="recovery-container" style="height:65%">
 
-    <form method="post" action="{{ url('/auth') }}"  class="d-flex flex-row">
+    <form method="post" action="{{ url('/auth/login') }}"  class="d-flex flex-row">
         @csrf 
         
 
@@ -40,6 +40,25 @@
         <button disabled  class="btn btn-outline-secondary custom-btn">Limpiar</button>
         <button type="submit" class="btn btn-outline-secondary custom-btn">Ingresar</button>
 
+    </div>
+
+    <div class="d-flex flex-row">
+        @if ($message = Session::get('res'))
+        <div class="alert alert-success">
+            <p>{{ json_encode($message) }}</p>
+        </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Whoops!</strong> There were some problems with your input.<br><br>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     </div>
 
 

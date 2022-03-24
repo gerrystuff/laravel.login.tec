@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Usuario;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -14,7 +17,57 @@ class AuthController extends Controller
 
     public function login(){
         return view('auth.login');
+        
 
+    }
+
+    public function auth(Request $request){
+        $res = [
+            'error' => false,
+            'msg' => '',
+            'payload' => null
+        ];
+        //TODOS
+        
+        //Get datos usuario
+        $datosUsuario = request()->except('_token');
+
+        //Validar inputs
+        $request -> validate([
+            'correo'=>'required',
+            'nip'=>'required',
+        ]);
+
+
+        //Validar si existe ese usuario
+        //Validar contraseñas
+        //Validar si esta en sesion
+        //Validar si es usuario especial
+        //
+        //retornar objeto 
+
+
+
+
+        $res['error'] = false;
+        $res['msg'] = 'Credenciales autenticadas correctamente';
+        $res['payload'] = $datosUsuario;
+
+
+        return redirect('/auth/login')->with("res",$res);
+
+
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            
+         $res['error'] = true;
+         $res['msg'] = 'Fatal error';
+         $res['payload'] = $th;
+
+         return redirect('/auth/login')->with("res",$res);
+        }
+        
     }
 
     public function register(){
@@ -24,36 +77,72 @@ class AuthController extends Controller
 
 
     public function show(){
-        
     }
 
     public function store(Request $request){
+
+        $res = [
+            'error' => false,
+            'msg' => '',
+            'payload' => null
+        ];
+        //TODOS
+
+        try {
+
+        //Get datos usuario
         $datosUsuario = request()->except('_token');
 
-
-        //TODOS
         //Validar inputs
         $request -> validate([
             'correo'=>'required',
             'nip'=>'required',
             'tipo'=>'required',
-            'nip_especial'=>'required',
         ]);
 
         //Validar usuario repetido
+        $usuarioExiste  = Usuario::find($datosUsuario["correo"]);
 
-        
+        if($usuarioExiste != null){
+            $res['error'] = true;
+            $res['msg'] = 'Usuario con ese correo ya existe';
+            return redirect('/auth/register')->with("res",$res);
+        }
 
+        //Encriptar contraseñas
+        $nip = Hash::make($datosUsuario['nip']);
+        $nip_especial = '';
+        if($datosUsuario["nip_especial"] != null){
+            $nip_especial = Hash::make($datosUsuario['nip_especial']);
+        }
 
-
-
+        //Crear usuario 
+        $usuario = new Usuario([
+            'correo' => $datosUsuario['correo'],
+            'nip' => $nip,
+            'nip_especial' => $nip_especial,
+            'tipo' => $datosUsuario['tipo']
+        ]);
 
         //Almacenar usuario
+        $usuario->save();
 
 
-        return redirect('/auth/register')->with("usuario",$datosUsuario);
+        $res['error'] = false;
+        $res['msg'] = 'Usuario registrado correctamente';
+        $res['payload'] = $usuario;
 
+        return redirect('/auth/register')->with("res",$res);
 
+        } catch (\Throwable $th) {
+            $res['error'] = true;
+            $res['msg'] = 'Fatal error';
+            $res['payload'] = $th;
+
+        return redirect('/auth/register')->with("res",$res);
+
+        }
+        
     }
 
 
