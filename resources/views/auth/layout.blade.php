@@ -5,6 +5,11 @@
 </head>
 
 <style>
+
+    p {
+        margin:0 !important;
+        padding:0 !important;
+    }
     .main-content{
         width: 100vw;
         background-color:rgba(245, 239, 239, 0.37);
@@ -29,18 +34,23 @@
 
 
     .recuperarbtn{
-        width:98%;
+        width:100%;
     }
 
 
 
     .login-container{
         height: 100%;
+        width: 100%;
     }
     .custom-btn{
         width:100%;
         margin:5px;
         /* background-color: grey; */
+    }
+
+    .flex-row {
+        width: 100%;
     }
 
   

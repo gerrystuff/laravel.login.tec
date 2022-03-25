@@ -27,11 +27,11 @@
 
 
 
- <div class="login-container d-flex justify-content-end flex-column">
+ <div class="d-flex flex-column justify-content-start login-container  ">
 
-    <div class="form-group fadegroup" onload="document.body.style.opacity='1'"> 
-        <p>Nombre</p>
-        <p>Juanito Diaz</p>
+    <div class="form-group "> 
+        <p  style="margin:0;padding:0;">Nombre</p>
+        <small>Juanito Diaz</small>
 
     </div>
 
@@ -40,25 +40,6 @@
         <button disabled  class="btn btn-outline-secondary custom-btn">Limpiar</button>
         <button type="submit" class="btn btn-outline-secondary custom-btn">Ingresar</button>
 
-    </div>
-
-    <div class="d-flex flex-row">
-        @if ($message = Session::get('res'))
-        <div class="alert alert-success">
-            <p>{{ json_encode($message) }}</p>
-        </div>
-    @endif
-
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
     </div>
 
 

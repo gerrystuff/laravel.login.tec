@@ -17,6 +17,13 @@ class Usuario extends Model {
         'correo','nip','tipo','nip_especial'
     ];
 
+    public function registrarUsuario(){
+
+        
+       return $this->save();
+    }
+
+
     
 
 }

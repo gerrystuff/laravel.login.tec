@@ -100,12 +100,12 @@ class AuthController extends Controller
             'tipo'=>'required',
         ]);
 
-        //Validar usuario repetido
+        //Validar usuario repetido /
         $usuarioExiste  = Usuario::find($datosUsuario["correo"]);
 
         if($usuarioExiste != null){
             $res['error'] = true;
-            $res['msg'] = 'Usuario con ese correo ya existe';
+            $res['msg'] = 'Este correo electrónico ya está en uso. Eliga otro.';
             return redirect('/auth/register')->with("res",$res);
         }
 
@@ -125,18 +125,19 @@ class AuthController extends Controller
         ]);
 
         //Almacenar usuario
-        $usuario->save();
+        $usuario->registrarUsuario();
+        
 
 
         $res['error'] = false;
         $res['msg'] = 'Usuario registrado correctamente';
         $res['payload'] = $usuario;
 
-        return redirect('/auth/register')->with("res",$res);
+        return redirect('/auth/login')->with("res",$res);
 
         } catch (\Throwable $th) {
             $res['error'] = true;
-            $res['msg'] = 'Fatal error';
+            $res['msg'] = $th;
             $res['payload'] = $th;
 
         return redirect('/auth/register')->with("res",$res);

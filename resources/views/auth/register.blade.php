@@ -43,27 +43,10 @@
 
     <div class="d-flex flex-row">
         <button disabled  class="btn btn-outline-secondary custom-btn">Limpiar</button>
-        <button  class="btn btn-outline-secondary custom-btn">Ingresar</button>
+        <button  class="btn btn-outline-secondary custom-btn">Crear</button>
 
     </div>
-    <div class="d-flex flex-row">
-        @if ($message = Session::get('res'))
-        <div class="alert alert-success">
-            <p>{{ json_encode($message) }}</p>
-        </div>
-    @endif
 
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-    </div>
 </form>
 
 
