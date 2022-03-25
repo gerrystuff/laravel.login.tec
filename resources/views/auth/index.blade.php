@@ -27,7 +27,6 @@
         </li>
 
       </ul>
-      <hr/>
 
     @yield('login')
     @yield('register')

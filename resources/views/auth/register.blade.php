@@ -6,7 +6,16 @@
 
     <form method="post"  action="{{ url('auth/register') }}"  class="d-flex flex-column">
         @csrf 
-        
+
+        <div class="d-flex flex-row">
+            <label style="margin-left: 5px;">Nombre</label>
+        </div>
+
+        <div class="d-flex flex-row justify-content-center">
+                <input style="width:98%;" value="Gerardo Padilla" type="text" name="nombre" id="nombre" class="form-control">    
+        </div>
+
+
         <div class="d-flex flex-row">
             <div class="form-group" style="margin:5px;">
                 <label >Correo electrónico</label>

@@ -22,7 +22,7 @@
         background-color: rgba(255, 255, 255, 0.849);
         border-radius: 2px;
         box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.5);
-        padding: 40px 40px 0px 40px;
+        padding: 10px 40px 15px 40px;
     }
 
 
@@ -34,7 +34,7 @@
 
 
     .recuperarbtn{
-        width:100%;
+        width:98%;
     }
 
 
