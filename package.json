@@ -14,5 +14,12 @@
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
+    },
+    "dependencies": {
+        "@babel/polyfill": "^7.12.1",
+        "@babel/preset-env": "^7.16.11",
+        "core-js": "^3.21.1",
+        "loading-circle": "^1.1.0",
+        "progressbar.js": "^1.1.0"
     }
 }

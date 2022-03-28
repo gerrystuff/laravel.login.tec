@@ -1,11 +1,10 @@
 @extends("auth.index")
 
 
-@section("register")
+@section("registro")
 <div class="recovery-container" >
 
-    <form method="post"  action="{{ url('auth/register') }}"  class="d-flex flex-column">
-        @csrf 
+    <form id="registro-form" class="d-flex flex-column">
 
         <div class="d-flex flex-row">
             <label style="margin-left: 5px;">Nombre</label>
@@ -41,7 +40,8 @@
             
             <div class="form-group">
                 <label>NIP Especial</label>
-                <input value="12345" type="text" class="form-control" style="width:100%;" name="nip_especial" id="nip_especial" placeholder="****">
+                <input class="form-control" 
+                      style="width:100%;" value="" name="nip_especial" id="nip_especial">
             </div>
     
         </div>
@@ -51,8 +51,8 @@
 
 
     <div class="d-flex flex-row">
-        <button disabled  class="btn btn-outline-secondary custom-btn">Limpiar</button>
-        <button  class="btn btn-outline-secondary custom-btn">Crear</button>
+        <button id="limpiar2" class="btn btn-outline-secondary custom-btn">Limpiar</button>
+        <button id="registrar" class="btn btn-outline-secondary custom-btn">Crear</button>
 
     </div>
 

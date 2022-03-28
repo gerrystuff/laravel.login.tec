@@ -2,140 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Models\AuthModel;
+use GuzzleHttp\Pool;
 
 class AuthController extends Controller {
 
-    private Usuario $usuarioModel;
+    private AuthModel $authModel;
 
 
     public function __construct(){
-        $this->usuarioModel = new Usuario();
+        $this->authModel = new AuthModel();
+    }
+
+    public function login(Request $request){
+        header('Content-Type:application/json; charset=utf-8');
+            
+         $datosUsuario = request()->except('_token');
+         
+         $req = $this->authModel->login($datosUsuario);
+
+         echo json_encode($req);
+            
     }
 
 
-  
-
-    public function auth(Request $request){
-
-    //Get datos usuario
-    $datosUsuario = request()->except('_token');
+    public function recuperar() {
+        header('Content-Type:application/json; charset=utf-8');
         
-    switch($request->input('action')){
-            
-        case 'recovery':          
-                try {
-                    //Validar inputs
-                    $request -> validate([
-                        'correo'=>'required',
-                        'nip'=>'required',
-                ]);
+         $datosUsuario = request()->except('_token');
 
+         $req = $this->authModel->recuperar($datosUsuario);
 
-                $req = $this->usuarioModel->recovery($datosUsuario);
-
-                if($req["error"])
-                return redirect('/auth/login')->with("res",$req);
-
-
-                return redirect('/auth/login')->with("usuarioRecuperado",$req);
-
-
-
-
-                } catch (\Throwable $th) {
-
-                $res['error'] = true;
-                $res['msg'] = 'Fatal error '. $th;
-                $res['payload'] = $th;
-
-                return redirect('/auth/login')->with("res",$res);
-                }
-                
-            break;
-            
-            case 'login':
-
-            try {
-
-            $req = $this->usuarioModel->login($datosUsuario);
-
-            if($req["error"])
-            return redirect('/auth/login')->with("res",$req);
-
-
-            // return redirect('/');
-
-            } catch (\Throwable $th) {
-
-             $res['error'] = true;
-             $res['msg'] = $th;
-             $res['payload'] = $th;
-
-             return redirect('/auth/login')->with("res",$res);
-            }
-
-                break;
-        }
-        
+         echo json_encode($req);   
        
-        
     }
+    public function store(){
+        header('Content-Type:application/json; charset=utf-8');
 
-
-
-    public function store(Request $request){
-
-        //Get datos usuario
         $datosUsuario = request()->except('_token');
+
+        $req = $this->authModel -> registrar($datosUsuario);
         
-        try {
-
-        //Validar inputs
-        $request -> validate([
-            'correo'=>'required',
-            'nip'=>'required',
-            'tipo'=>'required',
-        ]); 
-        
-        //Guardamos usuario nuevo
-        $req = $this->usuarioModel -> guardarUsuario($datosUsuario);
-
-        if($req["error"])
-            return redirect('/auth/register')->with("res",$req);
-
-        return redirect('/auth/login')->with("res",$req);
-
-        } catch (\Throwable $th) {
-            $res['error'] = true;
-            $res['msg'] = $th;
-            $res['payload'] = $th;
-        return redirect('/auth/register')->with("res",$res);
-
-        }
+        echo json_encode($req);
         
     }
 
 
-    public function create(Request $request){
-        return view('auth.create');
 
-    }
 
-    public function register(){
-        return view('auth.register');
+    public function registro(){
+        return view('auth.registro');
     }
 
     public function index(){
-        return view('auth.index');
-
+        return view('welcome');
     }
 
-    public function login(){
-        return view('auth.login');
+    public function ingreso(){
+        return view('auth.ingreso');
         
-
     }
 
 }
