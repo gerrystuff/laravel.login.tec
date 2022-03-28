@@ -4,19 +4,19 @@ class CustomResponse {
 
     private bool $error;
     private String $msg;
-    private String $payload;
+    private String $usuario;
 
-    public function __construct($error = false,$msg = "undefined",$payload = null)
+    public function __construct($error = false,$msg = "undefined",$usuario = null)
     {   
         $this->error=$error;
         $this->msg=$msg;
-        $this->payload=$payload;
+        $this->usuario=$usuario;
     }
 
         
     
     public function toString(){
-        return ['error'=>$this->error,'msg'=>$this->msg,'payload'=>$this->payload];
+        return ['error'=>$this->error,'msg'=>$this->msg,'usuario'=>$this->usuario];
     }
 
     public function getError(){
@@ -27,8 +27,8 @@ class CustomResponse {
         return $this->msg;
     }
 
-    public function getPayload(){
-        return $this->payload;
+    public function getusuario(){
+        return $this->usuario;
     }
 
     public function setError($error){
@@ -38,8 +38,8 @@ class CustomResponse {
     public function setMsg($msg){
         $this->msg = $msg;
     }
-    public function setPayload($payload){
-        $this->payload = $payload;
+    public function setusuario($usuario){
+        $this->usuario = $usuario;
     }
 
 }

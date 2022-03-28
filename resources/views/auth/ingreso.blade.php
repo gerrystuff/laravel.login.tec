@@ -4,10 +4,6 @@
 @extends("auth.index")
 
 
-<?php 
-$var = "eo";
-?>
-
 @section("ingreso")
 <div class="recovery-container" style="height:65%">
 
@@ -17,11 +13,11 @@ $var = "eo";
 
         <div class="form-group" style="margin:5px;">
             <label >Correo electrónico</label>
-            <input value="gerardo@gmail.com" type="email" name="correo" id="correo" class="form-control" placeholder="18170256@itculiacan.edu.mx">
+            <input value="gerardo0@gmail.com" type="email" name="correo" id="correo" class="form-control" placeholder="18170256@itculiacan.edu.mx">
         </div>
         <div class="form-group">
             <label>NIP</label>
-            <input  class="form-control" name="nip" id="nip" placeholder="****">
+            <input  class="form-control" value="12345" name="nip" id="nip" placeholder="****">
         </div>
 
       </div>
@@ -37,8 +33,15 @@ $var = "eo";
  <div class="d-flex flex-column justify-content-start login-container  ">
 
 
-        <div class="d-flex flex-row" id="datos-recuperados" style="margin:16px 0px 0px 7px; ">
-         
+        <div class="d-flex flex-row" style="margin:16px 0px 0px 7px; ">
+            <div id="usuario_container">
+                <p>Nombre</p>
+                <p style="font-size: 13px;"></p> 
+            </div>
+            <div id="nip_especial_container" class="form-group" style="margin-left: auto">
+                <label>NIP ESPECIAL</label>
+                <input type="text" value="" class="form-control" name="nip_especial" id="nip_especial" placeholder="****">
+            </div> 
           
         </div> 
         

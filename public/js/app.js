@@ -2198,17 +2198,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
- // var ProgressBar = require('progressbar.js');
-// var bar = new ProgressBar.Circle('#container', {
-//     strokeWidth: 6,
-//     easing: 'easeInOut',
-//     duration: 1400,
-//     color: '#FFEA82',
-//     trailColor: '#eee',
-//     trailWidth: 1,
-//     svgStyle: null
-// });
-// bar.animate(1.0);
+
 
 var Main = /*#__PURE__*/function () {
   function Main() {
@@ -2219,15 +2209,16 @@ var Main = /*#__PURE__*/function () {
 
     this.mainContainer = document.getElementById("main-content");
     this.correoInput = document.getElementById("correo");
-    this.nipInput = document.getElementById("nip");
-    this.nipEspecialInput = document.getElementById("nip_especial"); //Login targets
+    this.nipInput = document.getElementById("nip"); //Login targets
 
+    this.nipEspecialContainer;
+    this.usuarioContainer;
+    this.nipEspecialInput;
     this.recuperarBtn;
-    this.registrarBtn;
     this.ingresarBtn;
-    this.limpiarBtn1;
-    this.datosRecuperadosPanel; //Store targets
+    this.limpiarBtn1; //Store targets
 
+    this.registrarBtn;
     this.nombreInput;
     this.tipoUsuarioInput;
     this.registrarBtn;
@@ -2238,79 +2229,91 @@ var Main = /*#__PURE__*/function () {
   }
 
   _createClass(Main, [{
-    key: "datosRecuperadosTemplate",
-    value: function datosRecuperadosTemplate(nombre, nip_especial) {
-      var template = "".concat("\n        <div>\n            <p>Nombre</p>\n            <p style=\"font-size: 13px;\">".concat(nombre, "</p> \n        </div>\n        \n        "));
-
-      if (nip_especial != "") {
-        template += "".concat("\n            <div class=\"form-group\" style=\"margin-left: auto\">\n                <label>NIP ESPECIAL</label>\n                <input type=\"text\" value=\"\" class=\"form-control\" name=\"nip_especial\" id=\"nip_especial\" placeholder=\"****\">\n            </div> \n                ");
-      }
-
-      return template;
-    }
-  }, {
-    key: "requestInfoTemplate",
-    value: function requestInfoTemplate(data) {
+    key: "_requestInfoTemplate",
+    value: function _requestInfoTemplate(data) {
       var template = document.createElement('div');
       template.innerHTML = "\n        <div class=\"alert ".concat(data.error ? 'alert-danger' : 'alert-success', "\">\n            <p>").concat(data.msg, "</p>\n        </div>");
       return template;
     }
   }, {
-    key: "validationFormsTemplate",
-    value: function validationFormsTemplate() {
+    key: "_validationFormsTemplate",
+    value: function _validationFormsTemplate() {
       var template = document.createElement('div');
       template.innerHTML = "\n        <div class=\"alert alert-warning mt-5\">\n            <p>Ingrese todos los campos</p>\n        </div>";
       return template;
     }
   }, {
-    key: "validRecuperar",
-    value: function validRecuperar() {
-      console.log(this.nipEspecialInput);
+    key: "_validRecuperar",
+    value: function _validRecuperar() {
       var state = true;
       if (this.correoInput.value == "" || this.nipInput.value == '') state = false;
       return state;
     }
   }, {
-    key: "validLogin",
-    value: function validLogin() {
-      var state = true;
-      if (this.correoInput.value == "" || this.nipInput.value == '') state = false;
-      return state;
+    key: "_appendAlert",
+    value: function _appendAlert(data) {
+      if (this.requestStatus != null) this.mainContainer.removeChild(this.requestStatus);
+      this.requestStatus = this._requestInfoTemplate(data);
+      this.mainContainer.insertBefore(this.requestStatus, this.mainContainer.firstChild);
     }
   }, {
-    key: "ingresoView",
-    value: function ingresoView() {
-      var _this = this;
-
-      //Targets
+    key: "_setIngresoTargets",
+    value: function _setIngresoTargets() {
       this.recuperarBtn = document.getElementById("recuperar");
       this.ingresarBtn = document.getElementById("ingresar");
       this.limpiarBtn1 = document.getElementById("limpiar1");
-      this.datosRecuperadosContainer = document.getElementById("datos-recuperados"); //Config
-
-      this.ingresarBtn.disabled = true; //Listeners
+      this.usuarioContainer = document.getElementById("usuario_container");
+      this.nipEspecialContainer = document.getElementById("nip_especial_container");
+      this.nipEspecialInput = document.getElementById("nip_especial");
+    }
+  }, {
+    key: "_setRegistroTargets",
+    value: function _setRegistroTargets() {
+      this.limpiarBtn2 = document.getElementById("limpiar2");
+      this.registrarBtn = document.getElementById("registrar");
+      this.registroForm = document.getElementById("registro-form");
+      this.tipoUsuarioInput = document.getElementById("tipo");
+      this.nipEspecialInput = document.getElementById("nip_especial");
+    }
+  }, {
+    key: "_setIngresoListeners",
+    value: function _setIngresoListeners() {
+      var _this = this;
 
       this.recuperarBtn.addEventListener('click', function (event) {
         event.preventDefault();
+        _this.usuarioContainer.style.display = "none";
+        _this.nipEspecialContainer.style.display = "none";
 
-        var validRec = _this.validRecuperar();
+        var validRec = _this._validRecuperar();
 
         if (!validRec) {
-          _this.mainContainer.appendChild(_this.validationFormsTemplate());
+          _this._appendAlert({
+            error: true,
+            msg: "Ingrese todos los campos"
+          });
 
           return;
         }
 
-        axios__WEBPACK_IMPORTED_MODULE_0___default().post('recuperar', {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().post('/auth/recuperar', {
           correo: _this.correoInput.value,
           nip: _this.nipInput.value
         }).then(function (res) {
           var data = res.data;
 
           if (!data.error) {
-            _this.datosRecuperadosContainer.innerHTML = _this.datosRecuperadosTemplate(data.payload.nombre, data.payload.nip_especial);
-            _this.ingresarBtn.disabled = false;
+            _this._appendAlert({
+              error: false,
+              msg: "Usuario recuperado exitosamente"
+            });
+
+            _this.usuarioContainer.style.display = "block";
+            _this.usuarioContainer.lastElementChild.innerHTML = data.usuario.nombre;
+            if (data.usuario.tipo == 1) _this.nipEspecialContainer.style.display = "block";else _this.nipEspecialContainer.style.display = "none";
           }
+
+          _this._appendAlert(data);
         })["catch"](function (err) {
           console.log(err);
         });
@@ -2319,42 +2322,36 @@ var Main = /*#__PURE__*/function () {
         event.preventDefault();
         axios__WEBPACK_IMPORTED_MODULE_0___default().post('login', {
           correo: _this.correoInput.value,
-          nip: _this.nipInput.value
+          nip: _this.nipInput.value,
+          nip_especial: _this.nipEspecialInput.value
         }).then(function (res) {
           var data = res.data;
           console.log(data);
 
-          if (!data.error) {
-            _this.datosRecuperadosContainer.innerHTML = _this.datosRecuperadosTemplate(data.payload.nombre, data.payload.nip_especial);
+          if (data.error) {
+            _this._appendAlert(data);
+
+            return;
           }
+
+          console.log("A");
+          window.location = "/home";
+          console.log("B");
         })["catch"](function (err) {
           console.log(err);
         });
       });
       this.limpiarBtn1.addEventListener('click', function (event) {
         event.preventDefault();
-        console.log("limpiar 1");
+        _this.correoInput.value = '';
+        _this.nipInput.value = '';
+        _this.nipEspecialInput.value = '';
       });
     }
   }, {
-    key: "registroView",
-    value: function registroView() {
+    key: "_setRegistroListeners",
+    value: function _setRegistroListeners() {
       var _this2 = this;
-
-      //Target buttons
-      this.limpiarBtn2 = document.getElementById("limpiar2");
-      this.registrarBtn = document.getElementById("registrar");
-      this.registroForm = document.getElementById("registro-form");
-      this.tipoUsuarioInput = document.getElementById("tipo"); //Config targets
-
-      this.nipEspecialInput.disabled = true;
-      this.tipoUsuarioInput.addEventListener('change', function (event) {
-        event.preventDefault();
-        if (_this2.tipoUsuarioInput.value == 1) _this2.nipEspecialInput.disabled = false;else {
-          _this2.nipEspecialInput.value = "";
-          _this2.nipEspecialInput.disabled = true;
-        }
-      }); //Listeners
 
       this.registrarBtn.addEventListener('click', function (event) {
         event.preventDefault(); //Parse inputs to usuario json
@@ -2365,19 +2362,51 @@ var Main = /*#__PURE__*/function () {
           usuario[key] = value;
         });
         axios__WEBPACK_IMPORTED_MODULE_0___default().post('registro', usuario).then(function (res) {
-          if (_this2.requestStatus != null) _this2.mainContainer.removeChild(_this2.requestStatus);
           var data = res.data;
-          _this2.requestStatus = _this2.requestInfoTemplate(data);
 
-          _this2.mainContainer.insertBefore(_this2.requestStatus, _this2.mainContainer.firstChild);
+          _this2._appendAlert(data);
         })["catch"](function (err) {
           console.log(err);
         });
       });
       this.limpiarBtn2.addEventListener('click', function (event) {
         event.preventDefault();
+        document.getElementById("nombre").value = "";
+        document.getElementById("correo").value = "";
+        document.getElementById("nip").value = "";
+        document.getElementById("nip").value = "";
         console.log("limpiar 2");
       });
+      this.tipoUsuarioInput.addEventListener('change', function (event) {
+        event.preventDefault();
+        if (_this2.tipoUsuarioInput.value == 1) _this2.nipEspecialInput.disabled = false;else {
+          _this2.nipEspecialInput.value = "";
+          _this2.nipEspecialInput.disabled = true;
+        }
+      });
+    }
+  }, {
+    key: "ingresoView",
+    value: function ingresoView() {
+      //Targets
+      this._setIngresoTargets(); //Config
+
+
+      this.usuarioContainer.style.display = "none";
+      this.nipEspecialContainer.style.display = "none"; //Listeners        
+
+      this._setIngresoListeners();
+    }
+  }, {
+    key: "registroView",
+    value: function registroView() {
+      //Targets
+      this._setRegistroTargets(); //Config 
+
+
+      this.nipEspecialInput.disabled = true; //Listeners
+
+      this._setRegistroListeners();
     }
   }]);
 

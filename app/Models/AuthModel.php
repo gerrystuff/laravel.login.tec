@@ -11,11 +11,13 @@ class AuthModel {
         $res = [
             'error' => false,
             'msg' => 'Usuario recuperado exitosamente.',
-            'payload' => null
+            'usuario' => null
         ];
         
         //Validacion de usuario existente 
-      $query = DB::select('call pa_getUser(?)',[$datosUsuario["correo"]]);
+
+    
+        $query = DB::select('call pa_getUser(?)',[$datosUsuario["correo"]]);
 
 
         $usuarioExiste = collect($query);
@@ -36,7 +38,7 @@ class AuthModel {
         }
 
 
-        $res["payload"] = $usuarioExiste[0];
+        $res["usuario"] = $usuarioExiste[0];
 
         return $res;
     }
@@ -45,17 +47,18 @@ class AuthModel {
         $res = [
             'error' => false,
             'msg' => 'Usuario autenticado exitosamente.',
-            'payload' => null
+            'usuario' => null
         ];
-        
 
         try {
         
-
-        //Validacion de usuario existente 
+        
+            //Validacion de usuario existente 
         $query = DB::select('call pa_getUser(?)',[$datosUsuario["correo"]]);
         
         $usuarioExiste = collect($query);
+
+
 
         if(count($usuarioExiste) == 0){
             $res["error"] = true;
@@ -74,6 +77,8 @@ class AuthModel {
 
 
         if($usuarioExiste[0]->tipo == 1){
+
+            
         
             $nip_especialValido = Hash::check($datosUsuario["nip_especial"],$usuarioExiste[0]->nip_especial);
         
@@ -94,12 +99,20 @@ class AuthModel {
 
         DB::select('call pa_logIn(?,?)',[$datosUsuario["correo"],$flag]);
 
-        $res["msg"] = "Usuario auntenticado correctamente." ;
+        if($flag == 1){
+            $res["error"] = true;
+            $res["msg"] = "El usuario esta actualmente en sesión. " . $flag;
+            return $res;
+        }
+
         return $res;
 
         } catch (\Throwable $th) {
             $res["error"] = true;
             $res["msg"] = $th;
+            $res["usuario"] = false;
+
+            echo $th;
 
             return $res;
         }
@@ -112,7 +125,7 @@ class AuthModel {
         $res = [
             'error' => false,
             'msg' => 'Usuario registrado correctamente. Inicie sesión',
-            'payload' => null,
+            'usuario' => null,
             "internal_error" => null,
         ];
 
@@ -154,8 +167,8 @@ class AuthModel {
 
         } catch (\Throwable $th) {
             $res["error"] = true;
-            $res["msg"] = "No se guardo el usuario.";
-            $res["payload"] = $usuarioNuevo;
+            $res["msg"] = "No se guardo el usuario, verifique los campos.";
+            $res["usuario"] = $usuarioNuevo;
             $res["internal_error"] = $th;
             return $res;
             // var_dump($th);

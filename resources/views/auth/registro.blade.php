@@ -14,7 +14,6 @@
                 <input style="width:98%;" value="Gerardo Padilla" type="text" name="nombre" id="nombre" class="form-control">    
         </div>
 
-
         <div class="d-flex flex-row">
             <div class="form-group" style="margin:5px;">
                 <label >Correo electrónico</label>

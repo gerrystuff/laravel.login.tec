@@ -1,6 +1,7 @@
 @extends('auth.layout')
 
 @section('content')
+
 <div id="main-content" class="main-content d-flex flex-column justify-content-center align-items-center">
   <div class="log-form d-flex flex-column align-items-center">
       <ul class="nav">
@@ -15,5 +16,6 @@
 
     @yield('ingreso')
     @yield('registro')
+
     </div>
 </div>

@@ -15,12 +15,15 @@ class AuthController extends Controller {
         $this->authModel = new AuthModel();
     }
 
-    public function login(Request $request){
+    public function login(){
         header('Content-Type:application/json; charset=utf-8');
             
          $datosUsuario = request()->except('_token');
          
          $req = $this->authModel->login($datosUsuario);
+
+      
+
 
          echo json_encode($req);
             
@@ -37,6 +40,8 @@ class AuthController extends Controller {
          echo json_encode($req);   
        
     }
+
+
     public function store(){
         header('Content-Type:application/json; charset=utf-8');
 
@@ -62,6 +67,10 @@ class AuthController extends Controller {
     public function ingreso(){
         return view('auth.ingreso');
         
+    }
+
+    public function home(){
+        return view('auth.home');
     }
 
 }

@@ -12,7 +12,7 @@
 
 
     @yield('content')
-
+    @yield('home')
 
 </body>
 </html>

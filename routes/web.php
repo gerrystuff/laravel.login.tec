@@ -11,6 +11,7 @@ Route::redirect('/','/auth/ingreso');
 //Views
 Route::get('/auth/ingreso',[AuthController::class,'ingreso']);
 Route::get('/auth/registro',[AuthController::class,'registro']);
+Route::get('/home',[AuthController::class,'home']);
 
 
 //Events

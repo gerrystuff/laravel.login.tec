@@ -1,15 +1,5 @@
 import axios from "axios";
-// var ProgressBar = require('progressbar.js');
-// var bar = new ProgressBar.Circle('#container', {
-//     strokeWidth: 6,
-//     easing: 'easeInOut',
-//     duration: 1400,
-//     color: '#FFEA82',
-//     trailColor: '#eee',
-//     trailWidth: 1,
-//     svgStyle: null
-// });
-// bar.animate(1.0);
+
 class Main {
 
 
@@ -22,16 +12,18 @@ class Main {
         this.mainContainer = document.getElementById("main-content");
         this.correoInput = document.getElementById("correo");
         this.nipInput = document.getElementById("nip");
-        this.nipEspecialInput = document.getElementById("nip_especial");
 
         //Login targets
+        this.nipEspecialContainer;
+        this.usuarioContainer;
+
+        this.nipEspecialInput;
         this.recuperarBtn;
-        this.registrarBtn;
         this.ingresarBtn;
         this.limpiarBtn1;
-        this.datosRecuperadosPanel;
 
         //Store targets
+        this.registrarBtn;
         this.nombreInput;
         this.tipoUsuarioInput;
         this.registrarBtn;
@@ -41,37 +33,10 @@ class Main {
         //Forms
         this.registroForm;
         this.recuperarForm;
-
-
     }
 
 
-    datosRecuperadosTemplate(nombre, nip_especial) {
-            let template = `${
-            `
-        <div>
-            <p>Nombre</p>
-            <p style="font-size: 13px;">${nombre}</p> 
-        </div>
-        
-        ` 
-        }`
-        
-        if(nip_especial != ""){
-            template += `${
-                `
-            <div class="form-group" style="margin-left: auto">
-                <label>NIP ESPECIAL</label>
-                <input type="text" value="" class="form-control" name="nip_especial" id="nip_especial" placeholder="****">
-            </div> 
-                `
-            }`
-        }
-        
-        return template;
-    }
-
-    requestInfoTemplate(data){
+    _requestInfoTemplate(data) {
 
         const template = document.createElement('div');
 
@@ -83,7 +48,7 @@ class Main {
         return template;
     }
 
-    validationFormsTemplate(){
+    _validationFormsTemplate() {
 
         const template = document.createElement('div');
 
@@ -95,67 +60,83 @@ class Main {
         return template;
     }
 
-    validRecuperar(){
-        console.log(this.nipEspecialInput);
+    _validRecuperar() {
         let state = true;
-        if(this.correoInput.value == "" || this.nipInput.value == '')
-        state = false;
-
-        return state;
-    }
-    validLogin(){
-        let state = true;
-        if(this.correoInput.value == "" || this.nipInput.value == '' )
-        state = false;
-
+        if (this.correoInput.value == "" || this.nipInput.value == '')
+            state = false;
 
         return state;
     }
 
 
-    ingresoView() {
 
-        //Targets
+
+    _appendAlert(data) {
+
+        if (this.requestStatus != null)
+            this.mainContainer.removeChild(this.requestStatus);
+
+
+        this.requestStatus = this._requestInfoTemplate(data);
+
+        this.mainContainer.insertBefore(this.requestStatus, this.mainContainer.firstChild);
+
+    }
+
+    _setIngresoTargets() {
         this.recuperarBtn = document.getElementById("recuperar");
         this.ingresarBtn = document.getElementById("ingresar");
         this.limpiarBtn1 = document.getElementById("limpiar1")
-        this.datosRecuperadosContainer = document.getElementById("datos-recuperados");
+        this.usuarioContainer = document.getElementById("usuario_container");
+        this.nipEspecialContainer = document.getElementById("nip_especial_container");
+        this.nipEspecialInput = document.getElementById("nip_especial");
+    }
 
-        //Config
-        this.ingresarBtn.disabled =  true;
+    _setRegistroTargets() {
+        this.limpiarBtn2 = document.getElementById("limpiar2");
+        this.registrarBtn = document.getElementById("registrar");
+        this.registroForm = document.getElementById("registro-form");
+        this.tipoUsuarioInput = document.getElementById("tipo");
+        this.nipEspecialInput = document.getElementById("nip_especial");
+    }
 
+    _setIngresoListeners() {
 
-
-
-        //Listeners
         this.recuperarBtn.addEventListener('click', (event) => {
             event.preventDefault();
 
+            this.usuarioContainer.style.display = "none";
+            this.nipEspecialContainer.style.display = "none";
 
+            const validRec = this._validRecuperar();
 
-            const validRec = this.validRecuperar();
-
-            if(!validRec){
-                this.mainContainer.appendChild(this.validationFormsTemplate());
+            if (!validRec) {
+                this._appendAlert({ error: true, msg: "Ingrese todos los campos" })
                 return;
             }
 
 
-
-           axios.post('recuperar', {
+            axios.post('/auth/recuperar', {
                 correo: this.correoInput.value,
                 nip: this.nipInput.value
-
             }).then((res) => {
 
                 const { data } = res;
+
+
                 if (!data.error) {
-                    this.datosRecuperadosContainer.innerHTML = this.datosRecuperadosTemplate(
-                        data.payload.nombre,
-                        data.payload.nip_especial
-                    )
-                    this.ingresarBtn.disabled = false;
+                    this._appendAlert({ error: false, msg: "Usuario recuperado exitosamente" })
+
+                    this.usuarioContainer.style.display = "block";
+                    this.usuarioContainer.lastElementChild.innerHTML = data.usuario.nombre;
+
+                    if (data.usuario.tipo == 1)
+                        this.nipEspecialContainer.style.display = "block";
+                    else
+                        this.nipEspecialContainer.style.display = "none";
                 }
+
+                this._appendAlert(data);
 
             }).catch((err) => {
                 console.log(err)
@@ -166,23 +147,23 @@ class Main {
         this.ingresarBtn.addEventListener('click', (event) => {
             event.preventDefault();
 
-
-
-
             axios.post('login', {
                 correo: this.correoInput.value,
-                nip: this.nipInput.value
+                nip: this.nipInput.value,
+                nip_especial: this.nipEspecialInput.value
 
             }).then((res) => {
-
                 const { data } = res;
-                console.log(data);
-                if (!data.error) {
-                    this.datosRecuperadosContainer.innerHTML = this.datosRecuperadosTemplate(
-                        data.payload.nombre,
-                        data.payload.nip_especial
-                    )
+                console.log(data)
+
+                if (data.error) {
+                    this._appendAlert(data);
+                    return;
                 }
+
+                console.log("A")
+                window.location = "/home";
+                console.log("B")
 
             }).catch((err) => {
                 console.log(err)
@@ -193,62 +174,32 @@ class Main {
         this.limpiarBtn1.addEventListener('click', (event) => {
             event.preventDefault();
 
-            console.log("limpiar 1")
+            this.correoInput.value = '';
+            this.nipInput.value = '';
+            this.nipEspecialInput.value = '';
+
         })
-
-
     }
 
-    
-
-    registroView() {
-        
-        //Target buttons
-        this.limpiarBtn2 = document.getElementById("limpiar2");
-        this.registrarBtn = document.getElementById("registrar");
-        this.registroForm = document.getElementById("registro-form");
-        this.tipoUsuarioInput = document.getElementById("tipo");
-
-        //Config targets
-        this.nipEspecialInput.disabled = true;
-
-        this.tipoUsuarioInput.addEventListener('change',(event) => {
-            event.preventDefault();
-
-            if(this.tipoUsuarioInput.value == 1)
-                this.nipEspecialInput.disabled = false;
-            
-            else{
-                this.nipEspecialInput.value = "";
-                this.nipEspecialInput.disabled = true;
-            
-        }
-        })
- 
-
-        //Listeners
+    _setRegistroListeners() {
         this.registrarBtn.addEventListener('click', (event) => {
             event.preventDefault();
 
-            
+
             //Parse inputs to usuario json
             var usuario = {};
-            var formData = new FormData(this.registroForm);    
+            var formData = new FormData(this.registroForm);
             formData.forEach((value, key) => {
                 usuario[key] = value;
             })
 
-  
+
             axios.post('registro', usuario).then((res) => {
 
-                if(this.requestStatus != null)
-                    this.mainContainer.removeChild(this.requestStatus);
-                    
                 const { data } = res;
 
-                this.requestStatus = this.requestInfoTemplate(data);
+                this._appendAlert(data);
 
-                this.mainContainer.insertBefore(this.requestStatus,this.mainContainer.firstChild);
             }).catch((err) => {
                 console.log(err)
             })
@@ -258,12 +209,58 @@ class Main {
         this.limpiarBtn2.addEventListener('click', (event) => {
             event.preventDefault();
 
+            document.getElementById("nombre").value = "";
+            document.getElementById("correo").value = "";
+            document.getElementById("nip").value = "";
+            document.getElementById("nip").value = "";
+
+
             console.log("limpiar 2")
+        })
+
+        this.tipoUsuarioInput.addEventListener('change', (event) => {
+            event.preventDefault();
+
+            if (this.tipoUsuarioInput.value == 1)
+                this.nipEspecialInput.disabled = false;
+
+            else {
+                this.nipEspecialInput.value = "";
+                this.nipEspecialInput.disabled = true;
+
+            }
         })
     }
 
 
-    
+
+    ingresoView() {
+
+        //Targets
+        this._setIngresoTargets();
+
+        //Config
+        this.usuarioContainer.style.display = "none";
+        this.nipEspecialContainer.style.display = "none";
+
+        //Listeners        
+        this._setIngresoListeners();
+
+    }
+
+
+
+    registroView() {
+
+        //Targets
+        this._setRegistroTargets();
+
+        //Config 
+        this.nipEspecialInput.disabled = true;
+
+        //Listeners
+        this._setRegistroListeners();
+    }
 }
 
 const main = new Main();
