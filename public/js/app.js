@@ -2301,12 +2301,10 @@ var Main = /*#__PURE__*/function () {
           nip: _this.nipInput.value
         }).then(function (res) {
           var data = res.data;
+          console.log(data);
 
           if (!data.error) {
-            _this._appendAlert({
-              error: false,
-              msg: "Usuario recuperado exitosamente"
-            });
+            _this._appendAlert(data);
 
             _this.usuarioContainer.style.display = "block";
             _this.usuarioContainer.lastElementChild.innerHTML = data.usuario.nombre;
@@ -2334,9 +2332,7 @@ var Main = /*#__PURE__*/function () {
             return;
           }
 
-          console.log("A");
           window.location = "/home";
-          console.log("B");
         })["catch"](function (err) {
           console.log(err);
         });
@@ -2357,12 +2353,14 @@ var Main = /*#__PURE__*/function () {
         event.preventDefault(); //Parse inputs to usuario json
 
         var usuario = {};
+        usuario["nip_especial"] = "";
         var formData = new FormData(_this2.registroForm);
         formData.forEach(function (value, key) {
           usuario[key] = value;
         });
-        axios__WEBPACK_IMPORTED_MODULE_0___default().post('registro', usuario).then(function (res) {
+        if (usuario) axios__WEBPACK_IMPORTED_MODULE_0___default().post('registro', usuario).then(function (res) {
           var data = res.data;
+          console.log(JSON.stringify(data));
 
           _this2._appendAlert(data);
         })["catch"](function (err) {

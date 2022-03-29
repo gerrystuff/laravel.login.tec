@@ -1,15 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AuthModel;
-use GuzzleHttp\Pool;
+use App\Models\Usuario;
 
 class AuthController extends Controller {
 
     private AuthModel $authModel;
-
 
     public function __construct(){
         $this->authModel = new AuthModel();
@@ -22,10 +19,7 @@ class AuthController extends Controller {
          
          $req = $this->authModel->login($datosUsuario);
 
-      
-
-
-         echo json_encode($req);
+        return json_encode($req);
             
     }
 
@@ -35,26 +29,25 @@ class AuthController extends Controller {
         
          $datosUsuario = request()->except('_token');
 
-         $req = $this->authModel->recuperar($datosUsuario);
+         $req = $this->authModel->recuperar($datosUsuario["correo"],$datosUsuario["nip"]);
 
-         echo json_encode($req);   
-       
+         return json_encode($req);
+      
     }
 
 
     public function store(){
         header('Content-Type:application/json; charset=utf-8');
 
-        $datosUsuario = request()->except('_token');
+            $datosUsuario = request()->except('_token');
 
-        $req = $this->authModel -> registrar($datosUsuario);
-        
-        echo json_encode($req);
+            $usuario = new Usuario($datosUsuario["correo"],$datosUsuario["nip"],$datosUsuario["tipo"],$datosUsuario["nip_especial"],$datosUsuario["nombre"]);
+            
+            $req = $this->authModel->registrar($usuario);
+
+            return json_encode($req);
         
     }
-
-
-
 
     public function registro(){
         return view('auth.registro');

@@ -1,22 +1,18 @@
 <?php
+namespace App\Models;
 
 class CustomResponse {
 
-    private bool $error;
-    private String $msg;
-    private String $usuario;
+    public bool $error;
+    public String $msg;
+    public String $internalError;
+    public Usuario $usuario;
 
-    public function __construct($error = false,$msg = "undefined",$usuario = null)
+    public function __construct($error = false,$msg = "undefined",$internalError = "")
     {   
         $this->error=$error;
         $this->msg=$msg;
-        $this->usuario=$usuario;
-    }
-
-        
-    
-    public function toString(){
-        return ['error'=>$this->error,'msg'=>$this->msg,'usuario'=>$this->usuario];
+        $this->internalError = $internalError;
     }
 
     public function getError(){
@@ -38,10 +34,30 @@ class CustomResponse {
     public function setMsg($msg){
         $this->msg = $msg;
     }
-    public function setusuario($usuario){
+    public function setUsuario(Usuario $usuario){
         $this->usuario = $usuario;
     }
 
+
+    /**
+     * Get the value of internalError
+     */ 
+    public function getInternalError()
+    {
+        return $this->internalError;
+    }
+
+    /**
+     * Set the value of internalError
+     *
+     * @return  self
+     */ 
+    public function setInternalError($internalError)
+    {
+        $this->internalError = $internalError;
+
+        return $this;
+    }
 }
 
 ?>

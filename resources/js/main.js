@@ -122,10 +122,10 @@ class Main {
             }).then((res) => {
 
                 const { data } = res;
-
+                console.log(data);
 
                 if (!data.error) {
-                    this._appendAlert({ error: false, msg: "Usuario recuperado exitosamente" })
+                    this._appendAlert(data);
 
                     this.usuarioContainer.style.display = "block";
                     this.usuarioContainer.lastElementChild.innerHTML = data.usuario.nombre;
@@ -147,6 +147,8 @@ class Main {
         this.ingresarBtn.addEventListener('click', (event) => {
             event.preventDefault();
 
+
+
             axios.post('login', {
                 correo: this.correoInput.value,
                 nip: this.nipInput.value,
@@ -161,9 +163,7 @@ class Main {
                     return;
                 }
 
-                console.log("A")
                 window.location = "/home";
-                console.log("B")
 
             }).catch((err) => {
                 console.log(err)
@@ -188,15 +188,20 @@ class Main {
 
             //Parse inputs to usuario json
             var usuario = {};
+            usuario["nip_especial"] = "";
             var formData = new FormData(this.registroForm);
             formData.forEach((value, key) => {
                 usuario[key] = value;
             })
 
+            if (usuario)
 
-            axios.post('registro', usuario).then((res) => {
+
+                axios.post('registro', usuario).then((res) => {
 
                 const { data } = res;
+
+                console.log(JSON.stringify(data));
 
                 this._appendAlert(data);
 
